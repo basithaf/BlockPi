@@ -1,4 +1,0 @@
-[
-  "test/test_blockpi.py::test_get_empty_screen",
-  "test/test_player.py::test_get_location"
-]
