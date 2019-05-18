@@ -8,4 +8,3 @@ def test_get_empty_screen():
     empty_screen = [empty] * 64
 
     assert screen == empty_screen
-
