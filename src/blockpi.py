@@ -1,4 +1,4 @@
-from sense_emu import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED
+from sense_emu import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED, DIRECTION_UP, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_RIGHT
 
 class BlockPi(object):
     def __init__(self):
@@ -47,13 +47,17 @@ class BlockPi(object):
         self.sense_hat.set_pixels([[0,0,0]] * 64)
 
     def run_game(self):
-        
-
         for i in self:
             event = self.sense_hat.stick.wait_for_event()
             if event.action != ACTION_RELEASED:
-                break
-                #do something
+                if event.direction == DIRECTION_UP:
+                    self.move_player_up()
+                elif event.direction == DIRECTION_DOWN:
+                    self.move_player_down()
+                elif event.direction == DIRECTION_RIGHT:
+                    self.move_player_right()
+                elif event.direction == DIRECTION_LEFT:
+                    self.move_player_left()
 
-
-
+#game = BlockPi()
+#game.run_game()
