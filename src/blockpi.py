@@ -3,24 +3,23 @@ from sense_emu import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED, DI
 class BlockPi(object):
     def __init__(self):
         self.sense_hat = SenseHat()
-        self.set_player_location(0,0)
+        self.set_player_location(-1,-1)
         return
 
     def get_screen(self):
         return self.sense_hat.get_pixels()
 
     def set_screen(self):
-        screen = ([[0,0,0]] * 56) + ([[0, 100, 0]] * 8)
-
-        self.sense_hat.set_pixels(screen)
+        self.sense_hat.set_pixels(self.current_screen)
+        if (self.player_x >= 0 and self.player_y >= 0):
+            self.sense_hat.set_pixel(self.player_x, self.player_y, 255, 255, 255)
 
     def set_level(self, level_array):
-        pass
+        self.current_screen = level_array.copy()
 
     def set_player_location(self, x, y):
         self.player_x = x
         self.player_y = y
-        self.set_screen()
 
     def move_player_right(self):
         new_x = min(7, self.player_x + 1)
@@ -30,9 +29,11 @@ class BlockPi(object):
         new_x = max(0, self.player_x - 1)
         self.set_player_location(new_x, self.player_y)
 
-    def move_player_up(self):
-        new_y = max(0, self.player_y - 1)
-        self.set_player_location(self.player_x, new_y)
+    def move_player_jump_up(self):
+        pixel_below_player = self.current_screen[(self.player_y + 1) * 8 + self.player_x]
+        if(pixel_below_player != [0, 0, 0]):
+            new_y = max(0, self.player_y - 3)
+            self.set_player_location(self.player_x, new_y)
 
     def move_player_down(self):
         new_y = min(7, self.player_y + 1)
@@ -43,7 +44,7 @@ class BlockPi(object):
 
     def handle_event(self, event):
         if event.direction == DIRECTION_UP:
-            self.move_player_up()
+            self.move_player_jump_up()
         elif event.direction == DIRECTION_DOWN:
             self.move_player_down()
         elif event.direction == DIRECTION_RIGHT:
