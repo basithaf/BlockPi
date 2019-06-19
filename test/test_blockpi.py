@@ -128,3 +128,28 @@ def test_screen_upper_bound(game, test_level):
 
     assert expected == screen
 
+def test_fall_until_floor(game, test_level):
+    expected = test_level.copy()
+    expected[50] = [248, 252, 248]
+
+    game.set_level(test_level)
+    game.set_player_location(2, 5)
+    game.move_player_gravity()
+    game.move_player_gravity()
+    game.set_screen()
+
+    screen = game.get_screen()
+
+    assert expected == screen
+
+def test_player_dies_if_in_bottom_row(game, test_level):
+    test_level[58] = [0,0,0]
+
+    game.set_level(test_level)
+    game.set_player_location(2, 6)
+    game.move_player_gravity()
+    game.move_player_gravity()
+    game.set_screen()
+
+    assert game.player_dead == True
+
