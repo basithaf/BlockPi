@@ -73,7 +73,7 @@ def test_player_jumps_up_from_ground(game, test_level):
 
     assert expected == screen
 
-def test_player_does_not_jump_up_in_air(game, test_level):
+def test_player_does_not_jump_up_while_in_air(game, test_level):
     expected = test_level.copy()
     expected[42] = [248, 252, 248]
 
@@ -152,4 +152,15 @@ def test_player_dies_if_in_bottom_row(game, test_level):
     game.set_screen()
 
     assert game.player_dead == True
+
+def test_player_wins_if_goal_is_reached(game, test_level):
+    test_level[55] = [0, 252, 0]
+
+    game.set_level(test_level)
+    game.set_player_location(6, 6)
+    game.move_player_right()
+    game.set_screen()
+
+    assert game.goal_reached == True
+
 

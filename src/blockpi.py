@@ -4,6 +4,7 @@ class BlockPi(object):
     def __init__(self):
         self.sense_hat = SenseHat()
         self.player_dead = False
+        self.goal_reached = False
         self.set_player_location(-1,-1)
         return
 
@@ -15,7 +16,10 @@ class BlockPi(object):
 
     def set_screen(self):
         self.sense_hat.set_pixels(self.current_screen)
+
         if (self.player_x >= 0 and self.player_y >= 0):
+            if (self.sense_hat.get_pixel(self.player_x, self.player_y) == [0, 252, 0]):
+                self.goal_reached = True
             self.sense_hat.set_pixel(self.player_x, self.player_y, 255, 255, 255)
 
     def set_level(self, level_array):
@@ -63,13 +67,16 @@ class BlockPi(object):
             self.move_player_left()
 
     def run_game(self):   
-        while not self.player_dead:
+        while not (self.player_dead and self.goal_reached):
             events = self.sense_hat.stick.get_events()
             if events:
                 for event in events: 
                     if event.action != ACTION_RELEASED:
                         self.handle_event(event)
         
-        self.sense_hat.show_message("CONGRATULATIONS")
+        if (self.goal_reached == True):
+            self.sense_hat.show_message("CONGRATULATIONS")
+        else:
+            self.sense_hat.show_message("YOU DED")
 
     
